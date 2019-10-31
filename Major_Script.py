@@ -5,12 +5,12 @@ from qgis.core import *
 QgsProject.instance().removeAllMapLayers()
 
 #Write import statements 
-filePath = r"C:\Users\david\OneDrive\Documents\SEM2 2019\Geo Progrmming\Mari\PYTHON\PYTHON\\"
+filePath = r"C:\Users\david\OneDrive\Documents\SEM2 2019\Geo Progrmming\Major Projj\suburbs\\"
 
 
 #set up local variables like filepaths.
 planning_fileName  = "planningzones.shp"
-area_fileName = "precinct5A.shp"
+area_fileName = "YARRAVILLE.shp"
 
 #Add your input layers 
 planningLayer = iface.addVectorLayer(filePath + planning_fileName , planning_fileName[:-4], "ogr")
@@ -45,7 +45,6 @@ idx = clippedLayer.fields().indexOf('ZONE_CODE')
 
 area_index = clippedLayer.fields().indexOf('AREA')
 
-atot = 0.0 
 for f in features: 
     
     geom = f.geometry().area()
@@ -57,11 +56,7 @@ for f in features:
     clippedLayer.updateFeature(f)
     
 #Fill in ZONE CODE field with code minus numbers 
-    area_attr = f.attributes()[area_index]
-    
-    atotal = atot + area_attr
-    
-    
+        
     attbs = f.attributes()[idx]
     
     no_digits = []
@@ -81,14 +76,14 @@ for f in features:
     a_attr = f.attributes()[idx_a]
 #        print (attributes)
         
-    a_total = a_tot + a_attr
+    a_total += a_attr + a_tot
     
     clippedLayer.updateFeature(f)
     
-    
+ 
 
 clippedLayer.commitChanges()
-print (atotal)
+print (a_total)
 
 #Sum area values of polygons with the same zone code
 
@@ -123,8 +118,9 @@ for uv in zone_codes :
         
 #        print('total:', total)
     totalkm2 = total/1000000 
-    perc = (total/a_total)/1000000
+    a_totalkm2 = a_total/1000000
+    perc = (totalkm2/a_totalkm2)*100
 #    print(perc)
     
-    print("ZONE:",uv,"\n", "Total area km2:", total/1000000, "\n", "Percentage:", perc, "%")
+    print("ZONE:",uv,"\n", "Total area km2:", totalkm2 , "\n", "Percentage:", perc, "%")
     
