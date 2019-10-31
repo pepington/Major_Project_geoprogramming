@@ -17,7 +17,7 @@ planningLayer = iface.addVectorLayer(filePath + planning_fileName , planning_fil
 areaLayer = iface.addVectorLayer(filePath + area_fileName , area_fileName[:-4], "ogr")
 
 #Clip planning scheme by area 
-clipOutput = filePath + "clipOutput_57.shp"
+clipOutput = filePath + "clipOutput_66.shp"
 
 clipdict = { "INPUT" : planningLayer, 
               "OVERLAY" : areaLayer  ,
@@ -43,7 +43,7 @@ features = clippedLayer.getFeatures()
 
 idx = clippedLayer.fields().indexOf('ZONE_CODE')
 
-area_index = f.fieldNameIndex('AREA')
+area_index = clippedLayer.fields().indexOf('AREA')
 
 atot = 0.0 
 for f in features: 
@@ -57,7 +57,7 @@ for f in features:
     clippedLayer.updateFeature(f)
     
 #Fill in ZONE CODE field with code minus numbers 
-    area_attr = f.attributes()[idx_a]
+    area_attr = f.attributes()[area_index]
     
     atotal = atot + area_attr
     
@@ -75,7 +75,17 @@ for f in features:
     
     f.setAttribute(f.fieldNameIndex('CODE'), result)
     
+    a_tot = 0.0
+      
+    
+    a_attr = f.attributes()[idx_a]
+#        print (attributes)
+        
+    a_total = a_tot + a_attr
+    
     clippedLayer.updateFeature(f)
+    
+    
 
 clippedLayer.commitChanges()
 print (atotal)
@@ -112,6 +122,9 @@ for uv in zone_codes :
         total = total + attributes
         
 #        print('total:', total)
-       
-    print("ZONE:",uv, "Total area:", total/1000000)
+    totalkm2 = total/1000000 
+    perc = (total/a_total)/1000000
+#    print(perc)
+    
+    print("ZONE:",uv,"\n", "Total area km2:", total/1000000, "\n", "Percentage:", perc, "%")
     
