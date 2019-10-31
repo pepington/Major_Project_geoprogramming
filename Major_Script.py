@@ -17,8 +17,7 @@ planningLayer = iface.addVectorLayer(filePath + planning_fileName , planning_fil
 areaLayer = iface.addVectorLayer(filePath + area_fileName , area_fileName[:-4], "ogr")
 
 #Clip planning scheme by area 
-clipOutput = filePath + "clipOutput_66.shp"
-
+clipOutput = filePath + "clipOutput_67.shp"
 
 
 clipdict = { "INPUT" : planningLayer, 
@@ -74,7 +73,7 @@ for f in features:
     
     f.setAttribute(f.fieldNameIndex('CODE'), result)
             
-    a_attr = f.attributes()[idx_a]
+    a_attr = f.attributes()[area_index]
 #        print (attributes)
         
     a_tot = a_tot + a_attr
