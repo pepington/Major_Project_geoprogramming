@@ -10,7 +10,7 @@ filePath = r"C:\Users\david\OneDrive\Documents\SEM2 2019\Geo Progrmming\Major Pr
 
 #set up local variables like filepaths.
 planning_fileName  = "planningzones.shp"
-area_fileName = "YARRAVILLE.shp"
+area_fileName = "merged.gpkg"
 
 #Add your input layers 
 planningLayer = iface.addVectorLayer(filePath + planning_fileName , planning_fileName[:-4], "ogr")
@@ -18,6 +18,8 @@ areaLayer = iface.addVectorLayer(filePath + area_fileName , area_fileName[:-4], 
 
 #Clip planning scheme by area 
 clipOutput = filePath + "clipOutput_66.shp"
+
+
 
 clipdict = { "INPUT" : planningLayer, 
               "OVERLAY" : areaLayer  ,
@@ -45,6 +47,8 @@ idx = clippedLayer.fields().indexOf('ZONE_CODE')
 
 area_index = clippedLayer.fields().indexOf('AREA')
 
+a_tot = 0.0
+
 for f in features: 
     
     geom = f.geometry().area()
@@ -69,21 +73,18 @@ for f in features:
                     
     
     f.setAttribute(f.fieldNameIndex('CODE'), result)
-    
-    a_tot = 0.0
-      
-    
+            
     a_attr = f.attributes()[idx_a]
 #        print (attributes)
         
-    a_total += a_attr + a_tot
-    
+    a_tot = a_tot + a_attr
+
     clippedLayer.updateFeature(f)
     
  
 
 clippedLayer.commitChanges()
-print (a_total)
+print (a_tot)
 
 #Sum area values of polygons with the same zone code
 
@@ -118,7 +119,7 @@ for uv in zone_codes :
         
 #        print('total:', total)
     totalkm2 = total/1000000 
-    a_totalkm2 = a_total/1000000
+    a_totalkm2 = a_tot/1000000
     perc = (totalkm2/a_totalkm2)*100
 #    print(perc)
     
