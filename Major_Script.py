@@ -4,20 +4,26 @@ from qgis.core import *
 #Remove map layers from current project
 QgsProject.instance().removeAllMapLayers()
 
-#Write import statements 
-filePath = r"C:\Users\david\OneDrive\Documents\SEM2 2019\Geo Progrmming\Major Projj\suburbs\\"
-
+#WRITE IMPORT STATEMENTS AND SET UP FILEPATH
+#Input filepath of folders of planning scheme and investigation area
+planning_filePath = r"C:\Users\david\OneDrive\Documents\SEM2 2019\Geo Progrmming\Major Projj\suburbs\\"
+area_filePath = r"C:\Users\david\OneDrive\Documents\SEM2 2019\Geo Progrmming\Major Projj\suburbs\\"
 #set up local variables like filepaths.
+#input filename of planning scheme
 planning_fileName  = "planningzones.shp"
+#input filename of investigation area 
 area_fileName = "merged.gpkg"
 
 #Add your input layers 
-planningLayer = iface.addVectorLayer(filePath + planning_fileName , planning_fileName[:-4], "ogr")
-areaLayer = iface.addVectorLayer(filePath + area_fileName , area_fileName[:-4], "ogr")
+#planningLayer is the planning scheme 
+planningLayer = iface.addVectorLayer(planning_filePath + planning_fileName , planning_fileName[:-4], "ogr")
+#areaLayer is the investigation area  
+areaLayer = iface.addVectorLayer(area_filePath + area_fileName , area_fileName[:-4], "ogr")
+
 
 #Clip planning scheme by area
 #Set variable for clip output 
-clipOutput = filePath + "clipOutput_67.shp"
+clipOutput = filePath + "clipOutput.shp"
 
 #Create dictionary for clip parameters 
 clipdict = { "INPUT" : planningLayer, 
@@ -53,9 +59,8 @@ idx = clippedLayer.fields().indexOf('ZONE_CODE')
 
 #Set variable for index of newly created area field  
 area_index = clippedLayer.fields().indexOf('AREA')
-
-
 a_tot = 0.0
+
 #Begin iterating throough features in clipped layer
 for f in features: 
     
@@ -67,8 +72,7 @@ for f in features:
     f.setAttribute(area_index , geom)
     
 #Update feature to expect new attribute
-    clippedLayer.updateFeature(f)
-    
+    clippedLayer.updateFeature(f)    
     
 #Fill in new CODE field with ZONE_CODE minus numbers 
 # set variable for feature ZONE_CODE attributes       
@@ -122,7 +126,18 @@ zone_dict = {"SUZ" : "Special Use Zone",
             "PZ"   : "Port Zone",
             "PPRZ" : "Public Park and Recreation Zone",
             "CA"   : "Commonwealth Land Zone",
-            "CDZ"  : "Comprehensive Development Zone"
+            "CDZ"  : "Comprehensive Development Zone",
+            "BZ"   : "Commercial Zone",
+            "PCRZ" : "Public Conservation and Resource Zone",
+            "LDRZ" : "Low Density Residential Zone",
+            "TZ"   : "Township Zone",
+            "FZ"   : "Farming Zone", 
+            "GWZ"  : "Green Wedge Zone",
+            "RAZ"  : "Rural Activity Zone",
+            "RCZ"  : "Rural Conservation Zone", 
+            "RLZ"  : "Rural Living Zone",
+            "CCZ"  : "Capital City Zone", 
+            "DZ"   : "Docklands Zone"
             }
 
 
